@@ -4,7 +4,7 @@ $name = '';
 $email = '';
 $phone = '';
 $message = 'Enter some data and click on the Submit button.';
-
+$errormessage = '';
 //process
 $action = filter_input(INPUT_POST, 'action');
 
@@ -21,11 +21,11 @@ switch ($action) {
         // 2. display the name with only the first letter capitalized
         $i = strpos($name, ' ');
         if(empty($name)) {
-            $message = 'You must enter a name first.';
+            $errormessage = 'You must enter a name first.';
         }
         else if ($i === false)
         {
-            $message = "You are missing a first or last name. Please re-enter your name.";
+            $errormessage = "Please re-enter your full name.";
         }
         else
         {
@@ -45,7 +45,7 @@ switch ($action) {
         $dot = strpos($email, '.');
         if($at === false || $dot === false)
         {
-            $message .= "\nPlease enter a valid e-mail address."
+            $errormessage .= "\nPlease enter a valid e-mail address.";
         }
         /*************************************************
          * validate and process the phone number
@@ -53,11 +53,11 @@ switch ($action) {
         // 1. make sure the user enters at least seven digits, not including formatting characters
         // 2. format the phone number like this 123-4567 or this 123-456-7890
         if(strlen($phone) < 7){
-            $message .="\nYou must enter a valid phone number.";
+            $errormessage .="\nPlease enter a valid phone number.";
         }
         else if (!is_numeric($phone))
         {
-            $message .="\nYou must enter a valid phone number."
+            $errormessage .="\nPlease enter a valid phone number.";
         }
         else 
         {
@@ -69,14 +69,20 @@ switch ($action) {
         /*************************************************
          * Display the validation message
          ************************************************/
-        $message = <<<MESSAGE
-        "Hello ${first_name}, \n
+	if($errormessage == '')
+	{
+	$message = <<<MESSAGE
+        Hello ${first_name}, \n
         Thank you for entering this data: \n \n
         Name: $name \n
         Email: $email \n
         Phone: $formatphone
 MESSAGE;
-
+}
+else
+{
+	$message = $errormessage;
+}
         break;
 }
 include 'string_tester.php';
